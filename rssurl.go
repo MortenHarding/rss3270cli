@@ -22,9 +22,9 @@ var newURL = rssFeeds[0]
 func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 	go3270.Tx, any, error) {
 
-	// Accept Enter; PF3/Clear exit.
+	// Accept Enter; PF3 exit.
 	pfkeys := []go3270.AID{go3270.AIDEnter}
-	exitkeys := []go3270.AID{go3270.AIDPF3, go3270.AIDClear}
+	exitkeys := []go3270.AID{go3270.AIDPF3}
 
 	// Make a local copy of the screen definition that we can append lines to.
 	screen := make(go3270.Screen, len(layout))

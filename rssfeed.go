@@ -23,9 +23,9 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 
 	currentURL := rssFeedURL.(string)
 
-	// Accept Enter; PF3/Clear exit and PF4 new url.
+	// Accept Enter; PF3 exit and PF4 new url.
 	pfkeys := []go3270.AID{go3270.AIDEnter, go3270.AIDPF4}
-	exitkeys := []go3270.AID{go3270.AIDPF3, go3270.AIDClear}
+	exitkeys := []go3270.AID{go3270.AIDPF3}
 
 	headlines, err := fetchHeadlines(currentURL, maxHeadlines)
 	if err != nil {
@@ -63,7 +63,7 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 
 	screen = append(screen,
 		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80)}, // ASCII only
-		go3270.Field{Row: 23, Col: 0, Content: "Enter=refresh, PF3/Clear=exit, PF4=Change RSS URL"},
+		go3270.Field{Row: 23, Col: 0, Content: "Enter=refresh, PF3=exit, PF4=Change RSS URL"},
 	)
 
 	resp, err := go3270.HandleScreenAlt(
