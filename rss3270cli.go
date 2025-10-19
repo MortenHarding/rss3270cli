@@ -21,7 +21,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/racingmars/go3270"
+	go3270 "github.com/racingmars/go3270"
 )
 
 type rss struct {

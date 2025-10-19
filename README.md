@@ -1,13 +1,19 @@
-The code in this repo is a fork of https://github.com/ErnieTech101/rss3270svr
-with the below improvements and added features.
+This file is part of https://github.com/MortenHarding/rss3270cli/
+Copyright 2025 by Morten Harding, licensed under the MIT license. See
+LICENSE in the project root for license information.
 
-# A 3270 RSS Server written in Go
-This is a minimal example of a **3270 (TN3270)** terminal server in Go that displays an RSS feeds on a 24×80 style “green screen” using the `racingmars/go3270` library.
+It is based on example5 of https://github.com/racingmars/go3270/
+Copyright 2025 by Matthew R. Wilson
+and the code in https://github.com/ErnieTech101/rss3270svr
+Copyright ErnieTech101
+
+# A simple RSS proxy for TN3270 emulators
+This is a proxy server for use with **3270 (TN3270)** emulators that displays an RSS feeds on a 24×80 style “green screen”, using the `racingmars/go3270` library.
 
 ---
 ## Features
 
-- Connect via a 3270 emulator (e.g. `wx3270`, `wc3270`, Vista or Mocha for Mac) to port **7300**  
+- Connect via a 3270 emulator (e.g. `x3270`, `c3270`, Vista or Mocha for Mac) to port **7300**  
 - Displays top headlines from a selected RSS feed  
 - Switch between different RSS feeds
 - Add a custom RSS feed
@@ -21,36 +27,36 @@ This is a minimal example of a **3270 (TN3270)** terminal server in Go that disp
 ---
 ## Requirements
 
-- Network access from client to rss3270svr on port 7300, which is the default, or set port using the command line parameter -port xxxx
-- The file [rssfeed.url](https://github.com/MortenHarding/rss3270svr/blob/main/rssfeed.url)
-- A TN3270 emulator on client side (e.g. x3270, wc3270)
+- Network access from client to rss3270cli on port 7300, which is the default, or set port using the command line parameter -port xxxx
+- The file [rssfeed.url](https://github.com/MortenHarding/rss3270cli/blob/main/rssfeed.url)
+- A TN3270 emulator on client side (e.g. x3270, c3270)
 
 ---
 ## How to use it
 
-Get the latest releae of [rss3270svr](https://github.com/MortenHarding/rss3270svr/releases) from github, and the file [rssfeed.url](https://github.com/MortenHarding/rss3270svr/blob/main/rssfeed.url). Place both files in the same directory, and start rss3270svr.
+Get the latest releae of [rss3270cli](https://github.com/MortenHarding/rss3270cli/releases) from github, and the file [rssfeed.url](https://github.com/MortenHarding/rss3270cli/blob/main/rssfeed.url). Place both files in the same directory, and start rss3270cli.
 
- `./rss3270svr`
+ `./rss3270cli`
 
 The default port is 7300 that you will access from your TN3270 terminal emulator.
 Select your own port, using the command line parameter -port
 
- `./rss3270svr -port 9010`
+ `./rss3270cli -port 9010`
 
 ---
 ## How to connect
 Connect to the server's IP with a 3270 Client using port 7300 and a model 2 terminal style
 
-Example: `x3270 localhost:7300`
+Example: `c3270 localhost:7300`
 
 ---
-## Compile your own rss3270svr executable
+## Compile your own rss3270cli executable
 
- `git clone https://github.com/MortenHarding/rss3270svr.git`
+ `git clone https://github.com/MortenHarding/rss3270cli.git`
 
- `cd rss3270svr`
+ `cd rss3270cli`
  
- `go mod init rss3270svr`
+ `go mod init rss3270cli`
 
 Add the githut racingmars Go3270 dependency:
    
@@ -60,7 +66,7 @@ Add the githut racingmars Go3270 dependency:
 
 Build an executable
 
- `go build -o rss3270svr rss3270svr.go`
+ `go build -o rss3270cli .`
  
 
 ---
