@@ -11,12 +11,14 @@ and the code in https://github.com/ErnieTech101/rss3270svr
 Copyright ErnieTech101
 
 # A simple RSS proxy for TN3270 emulators
-This is a proxy server for use with **3270 (TN3270)** emulators that displays an RSS feed on a 24×80 style “green screen”, using the `racingmars/go3270` library.
+
+This is a proxy server for use with **3270 (TN3270)** emulators, that displays an RSS feed on a 24×80 style “green screen”, using the `racingmars/go3270` library.
 
 ---
 ## Features
 
 - Connect via a 3270 emulator (e.g. `x3270`, `c3270`, Vista or Mocha for Mac) to port **7300**  
+- Customize the port used
 - Displays top headlines from a selected RSS feed  
 - Switch between different RSS feeds
 - Add a custom RSS feed
@@ -24,8 +26,7 @@ This is a proxy server for use with **3270 (TN3270)** emulators that displays an
 - First row in `rssfeed.url` is the default RSS feed
 - Handle some special characters, not in EBCDIC. Currently only Nordic characters.
 - Refresh the RSS feed when you press **Enter**
-- Select another RSS feed by pressing **PF4**
-- Type `q` + Enter to quit, or press **PF3** / **Clear**      
+- Select another RSS feed by pressing **PF4**   
 
 ---
 ## Requirements
@@ -48,6 +49,7 @@ Select your own port, using the command line parameter -port
 
 ---
 ## How to connect
+
 Connect to the server's IP with a 3270 Client using port 7300
 
 Example: `c3270 localhost:7300`
@@ -61,7 +63,7 @@ Example: `c3270 localhost:7300`
  
  `go mod init rss3270cli`
 
-Add the githut racingmars Go3270 dependency:
+Add the github racingmars/Go3270 dependency:
    
  `go get github.com/racingmars/go3270@latest`
  
@@ -74,4 +76,5 @@ Build an executable
 
 ---
 ## License / Attribution
+
 This library is licensed under the MIT license; see the file LICENSE for details.
