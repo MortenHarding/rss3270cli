@@ -39,12 +39,13 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	now := time.Now().UTC().Format("15:04 UTC")
 	title := "RSS Feed"
 	header := padCenter(title, 80)
-	sub := padCenter(currentURL+" - Updated: "+now, 80)
+	lastUpdate := "Updated: " + now
 
 	screen = append(screen,
-		go3270.Field{Row: 0, Col: 0, Content: header, Intense: true},
-		go3270.Field{Row: 1, Col: 0, Content: sub},
-		go3270.Field{Row: 2, Col: 0, Content: strings.Repeat("-", 80)}, // ASCII only
+		go3270.Field{Row: 0, Col: 0, Content: header, Color: go3270.White, Intense: true},
+		go3270.Field{Row: 1, Col: 0, Content: currentURL},
+		go3270.Field{Row: 1, Col: 61, Content: lastUpdate, Color: go3270.Turquoise},
+		go3270.Field{Row: 2, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.White}, // ASCII only
 	)
 
 	row := 3
@@ -53,7 +54,7 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 			if row >= 22 { // leave space for footer/input
 				break
 			}
-			screen = append(screen, go3270.Field{Row: row, Col: 0, Content: line})
+			screen = append(screen, go3270.Field{Row: row, Col: 0, Content: line, Color: go3270.Green})
 			row++
 		}
 		if row >= 22 {
@@ -62,8 +63,13 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	}
 
 	screen = append(screen,
-		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80)}, // ASCII only
-		go3270.Field{Row: 23, Col: 0, Content: "Enter=refresh, PF3=exit, PF4=Change RSS URL"},
+		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.White}, // ASCII only
+		go3270.Field{Row: 23, Col: 0, Content: "Enter", Color: go3270.Turquoise, Intense: true},
+		go3270.Field{Row: 23, Col: 6, Content: "Refresh", Color: go3270.Blue, Intense: true},
+		go3270.Field{Row: 23, Col: 25, Content: "F3", Color: go3270.Turquoise, Intense: true},
+		go3270.Field{Row: 23, Col: 28, Content: "Exit", Color: go3270.Blue, Intense: true},
+		go3270.Field{Row: 23, Col: 45, Content: "F4", Color: go3270.Turquoise},
+		go3270.Field{Row: 23, Col: 48, Content: "Change RSS URL", Color: go3270.Blue},
 	)
 
 	resp, err := go3270.HandleScreenAlt(
