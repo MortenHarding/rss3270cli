@@ -1,14 +1,17 @@
 This file is part of https://github.com/MortenHarding/rss3270cli/
-Copyright 2025 by Morten Harding, licensed under the MIT license. See
-LICENSE in the project root for license information.
+
+Copyright 2025 by Morten Harding, licensed under the MIT license.
 
 It is based on example5 of https://github.com/racingmars/go3270/
+
 Copyright 2025 by Matthew R. Wilson
+
 and the code in https://github.com/ErnieTech101/rss3270svr
+
 Copyright ErnieTech101
 
 # A simple RSS proxy for TN3270 emulators
-This is a proxy server for use with **3270 (TN3270)** emulators that displays an RSS feeds on a 24×80 style “green screen”, using the `racingmars/go3270` library.
+This is a proxy server for use with **3270 (TN3270)** emulators that displays an RSS feed on a 24×80 style “green screen”, using the `racingmars/go3270` library.
 
 ---
 ## Features
@@ -27,9 +30,9 @@ This is a proxy server for use with **3270 (TN3270)** emulators that displays an
 ---
 ## Requirements
 
-- Network access from client to rss3270cli on port 7300, which is the default, or set port using the command line parameter -port xxxx
+- Network access from client to rss3270cli on port 7300, which is the default, or to the port defined by using the command line parameter -port xxxx
 - The file [rssfeed.url](https://github.com/MortenHarding/rss3270cli/blob/main/rssfeed.url)
-- A TN3270 emulator on client side (e.g. x3270, c3270)
+- A TN3270 emulator on client side
 
 ---
 ## How to use it
@@ -45,7 +48,7 @@ Select your own port, using the command line parameter -port
 
 ---
 ## How to connect
-Connect to the server's IP with a 3270 Client using port 7300 and a model 2 terminal style
+Connect to the server's IP with a 3270 Client using port 7300
 
 Example: `c3270 localhost:7300`
 
@@ -71,6 +74,4 @@ Build an executable
 
 ---
 ## License / Attribution
-This code is free to use, experiment with, and modify.
-
-The 3270 handling logic uses racingmars/go3270 (MIT-style / open source) as the backend for TN3270 screens.
+This library is licensed under the MIT license; see the file LICENSE for details.
