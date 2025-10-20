@@ -238,10 +238,18 @@ func replaceUnhandledChar(s string) string {
 func readRssUrlFile(filename string) []string {
 	content, err := os.ReadFile(filename)
 	lines := strings.Split(string(content), "\n")
+	out := []string{}
+
 	if err != nil {
 		fmt.Println(err)
 	}
+	// Only return lines with 'http'
+	for _, line := range lines {
+		if strings.Count(line, "http") == 1 {
+			out = append(out, line)
+		}
+	}
 
-	return lines
+	return out
 
 }

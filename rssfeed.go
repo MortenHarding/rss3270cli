@@ -98,7 +98,7 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 		return rssfeed, currentURL, err
 	case go3270.AIDPF4:
 		// Go to default screen size transaction
-		return rssurl, nil, nil
+		return rsstitles, nil, nil
 	case go3270.AIDPF3:
 		// Exit
 		return nil, nil, nil

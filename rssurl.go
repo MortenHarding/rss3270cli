@@ -94,9 +94,14 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 		ch := fieldValues["choice"]
 		var i int
 		if _, err := fmt.Sscanf(ch, "%2d", &i); err == nil {
-			fmt.Println(i)
+			//Do something with the error
 		}
-		newURL = rssFeeds[i]
+		if i < len(rssFeeds) {
+			newURL = rssFeeds[i]
+		} else {
+			newURL = rssFeeds[0]
+		}
+
 	}
 	if fieldValues["newURL"] != "" {
 		newURL = fieldValues["newURL"]
@@ -111,7 +116,7 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 		return rsstitles, nil, nil
 	case go3270.AIDPF3:
 		// Exit
-		return rssfeed, nil, nil
+		return nil, nil, nil
 	default:
 		// re-run current transaction
 		return rssurl, nil, nil
