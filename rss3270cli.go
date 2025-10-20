@@ -43,8 +43,19 @@ const (
 var layout = go3270.Screen{}
 var rssFeeds = readRssUrlFile("rssfeed.url")
 var defrssFeedURL = rssFeeds[0]
+var rssChannels [20][2]string
 
 func main() {
+
+	//rssChannels := make([][]string,0)
+
+	for i, url := range rssFeeds {
+		ct := fetchTitle(url)
+		rssChannels[i][0] = ct
+		rssChannels[i][1] = url
+		i++
+	}
+
 	//Define command line arguments
 	port := flag.String("port", "7300", "Listen on port")
 	flag.Parse()
@@ -82,30 +93,30 @@ func handle(conn net.Conn) {
 	}
 }
 
-func fetchTitle(url string) (string, error) {
+func fetchTitle(url string) string {
 	ctx, cancel := context.WithTimeout(context.Background(), httpTimeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return "error:", err
+		fmt.Println(err)
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return "error:", err
+		fmt.Println(err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode >= 300 {
 		body, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
-		return "error:", fmt.Errorf("HTTP %d: %s", resp.StatusCode, strings.TrimSpace(string(body)))
+		fmt.Errorf("HTTP %d: %s", resp.StatusCode, strings.TrimSpace(string(body)))
 	}
 
 	var r rss
 	if err := xml.NewDecoder(resp.Body).Decode(&r); err != nil {
-		return "error:", err
+		fmt.Println(err)
 	}
 	title := replaceUnhandledChar(r.Channel.Title)
-	return title, nil
+	return title
 }
 
 func fetchHeadlines(url string, limit int) ([]string, error) {
@@ -167,6 +178,22 @@ func wrap80(s string, width int) []string {
 		s = strings.TrimSpace(s[cut:])
 	}
 	lines = append(lines, padRight(s, width))
+	return lines
+}
+
+func max80(s string, width int) []string {
+	var lines []string
+	s = strings.ReplaceAll(s, "\n", " ")
+	if len(s) > width {
+		cut := width
+		if idx := strings.LastIndex(s[:width], " "); idx > 0 {
+			cut = idx
+		}
+		lines = append(lines, padRight(s[:cut], width))
+	} else {
+		lines = append(lines, padRight(s, width))
+	}
+
 	return lines
 }
 

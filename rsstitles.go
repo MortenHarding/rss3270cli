@@ -17,9 +17,9 @@ import (
 	"github.com/racingmars/go3270"
 )
 
-var newURL = rssFeeds[0]
+//var newURLtitles = rssFeeds[0]
 
-func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
+func rsstitles(conn net.Conn, devinfo go3270.DevInfo, data any) (
 	go3270.Tx, any, error) {
 
 	// Accept Enter; PF3 exit.
@@ -43,12 +43,13 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 		go3270.Field{Row: 3, Col: 0, Content: "Or select from one of the below channels"},
 	)
 
-	// Build list of RSS Url's
+	// Build list of RSS titles
 	row := 4
 
-	for i, url := range rssFeeds {
-		for _, line := range wrap80(fmt.Sprintf("%2d. %s", i, url), 80) {
-			if row >= 22 { // leave space for footer/input
+	var i int
+	for i = 0; i < len(rssChannels); i++ {
+		for _, line := range max80(fmt.Sprintf("%2d. %s", i, rssChannels[i][0]), 80) {
+			if rssChannels[i][0] == "" { // Exit when Title is blank
 				break
 			}
 			screen = append(screen, go3270.Field{Row: row, Col: 0, Content: line, Color: go3270.Yellow})
@@ -58,14 +59,13 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 			break
 		}
 	}
-
 	//Footer
 	screen = append(screen,
 		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.Blue}, // ASCII only
 		go3270.Field{Row: 23, Col: 0, Content: "Enter", Color: go3270.Turquoise},
 		go3270.Field{Row: 23, Col: 6, Content: "Save and return", Color: go3270.Blue},
 		go3270.Field{Row: 23, Col: 28, Content: "F2", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 31, Content: "Channels", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 31, Content: "URLs", Color: go3270.Blue},
 		go3270.Field{Row: 23, Col: 46, Content: "F3", Color: go3270.Turquoise},
 		go3270.Field{Row: 23, Col: 49, Content: "Exit", Color: go3270.Blue},
 		go3270.Field{Row: 23, Col: 60, Content: "Enter ##:", Color: go3270.Blue},
@@ -108,10 +108,10 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 		return rssfeed, newURL, nil
 	case go3270.AIDPF2:
 		// switch to Title screen
-		return rsstitles, nil, nil
+		return rssurl, nil, nil
 	case go3270.AIDPF3:
 		// Exit
-		return rssfeed, nil, nil
+		return nil, nil, nil
 	default:
 		// re-run current transaction
 		return rssurl, nil, nil

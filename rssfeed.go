@@ -39,7 +39,7 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	now := time.Now().UTC().Format("15:04 UTC")
 	title := "RSS Feed"
 	header := padCenter(title, 80)
-	channelTitle, err := fetchTitle(currentURL)
+	channelTitle := fetchTitle(currentURL)
 	if err != nil {
 		headlines = []string{fmt.Sprintf("Error fetching Channel Title: %v", err)}
 	}
