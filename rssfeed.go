@@ -39,13 +39,18 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	now := time.Now().UTC().Format("15:04 UTC")
 	title := "RSS Feed"
 	header := padCenter(title, 80)
-	lastUpdate := "Updated: " + now
+	channelTitle, err := fetchTitle(currentURL)
+	if err != nil {
+		headlines = []string{fmt.Sprintf("Error fetching Channel Title: %v", err)}
+	}
 
 	screen = append(screen,
 		go3270.Field{Row: 0, Col: 0, Content: header, Color: go3270.White, Intense: true},
-		go3270.Field{Row: 1, Col: 0, Content: currentURL},
-		go3270.Field{Row: 1, Col: 61, Content: lastUpdate, Color: go3270.Turquoise},
-		go3270.Field{Row: 2, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.White}, // ASCII only
+		go3270.Field{Row: 1, Col: 0, Content: "Channel ", Color: go3270.Blue, Intense: true},
+		go3270.Field{Row: 1, Col: 8, Content: channelTitle, Color: go3270.Turquoise},
+		go3270.Field{Row: 1, Col: 62, Content: "Updated ", Color: go3270.Blue},
+		go3270.Field{Row: 1, Col: 70, Content: now, Color: go3270.Turquoise},
+		go3270.Field{Row: 2, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.Blue}, // ASCII only
 	)
 
 	row := 3
@@ -54,7 +59,7 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 			if row >= 22 { // leave space for footer/input
 				break
 			}
-			screen = append(screen, go3270.Field{Row: row, Col: 0, Content: line, Color: go3270.Green})
+			screen = append(screen, go3270.Field{Row: row, Col: 0, Content: line, Color: go3270.White})
 			row++
 		}
 		if row >= 22 {
@@ -63,13 +68,13 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	}
 
 	screen = append(screen,
-		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.White}, // ASCII only
+		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.Blue}, // ASCII only
 		go3270.Field{Row: 23, Col: 0, Content: "Enter", Color: go3270.Turquoise, Intense: true},
 		go3270.Field{Row: 23, Col: 6, Content: "Refresh", Color: go3270.Blue, Intense: true},
-		go3270.Field{Row: 23, Col: 25, Content: "F3", Color: go3270.Turquoise, Intense: true},
-		go3270.Field{Row: 23, Col: 28, Content: "Exit", Color: go3270.Blue, Intense: true},
-		go3270.Field{Row: 23, Col: 45, Content: "F4", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 48, Content: "Change RSS URL", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 30, Content: "F3", Color: go3270.Turquoise, Intense: true},
+		go3270.Field{Row: 23, Col: 33, Content: "Exit", Color: go3270.Blue, Intense: true},
+		go3270.Field{Row: 23, Col: 50, Content: "F4", Color: go3270.Turquoise},
+		go3270.Field{Row: 23, Col: 53, Content: "Change channel", Color: go3270.Blue},
 	)
 
 	resp, err := go3270.HandleScreenAlt(

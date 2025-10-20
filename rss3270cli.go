@@ -82,6 +82,32 @@ func handle(conn net.Conn) {
 	}
 }
 
+func fetchTitle(url string) (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), httpTimeout)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return "error:", err
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "error:", err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
+		return "error:", fmt.Errorf("HTTP %d: %s", resp.StatusCode, strings.TrimSpace(string(body)))
+	}
+
+	var r rss
+	if err := xml.NewDecoder(resp.Body).Decode(&r); err != nil {
+		return "error:", err
+	}
+	title := replaceUnhandledChar(r.Channel.Title)
+	return title, nil
+}
+
 func fetchHeadlines(url string, limit int) ([]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), httpTimeout)
 	defer cancel()

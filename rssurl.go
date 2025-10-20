@@ -30,13 +30,13 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 	screen := make(go3270.Screen, len(layout))
 	copy(screen, layout)
 
-	title := "Change RSS URL Feed"
+	title := "Change channel / RSS URL"
 	header := padCenter(title, 79)
 
 	//Header
 	screen = append(screen,
 		go3270.Field{Row: 0, Col: 0, Content: header, Color: go3270.White, Intense: true},
-		go3270.Field{Row: 1, Col: 0, Content: strings.Repeat("-", 79), Color: go3270.White}, // ASCII only
+		go3270.Field{Row: 1, Col: 0, Content: strings.Repeat("-", 79), Color: go3270.Blue}, // ASCII only
 		go3270.Field{Row: 2, Col: 0, Content: "Enter URL:"},
 		go3270.Field{Row: 2, Col: 11, Name: "newURL", Write: true, Highlighting: go3270.Underscore},
 		go3270.Field{Row: 2, Col: 79, Autoskip: true}, // field "stop" character
@@ -61,7 +61,7 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 
 	//Footer
 	screen = append(screen,
-		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.White}, // ASCII only
+		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.Blue}, // ASCII only
 		go3270.Field{Row: 23, Col: 0, Content: "Enter", Color: go3270.Turquoise},
 		go3270.Field{Row: 23, Col: 6, Content: "Save and return", Color: go3270.Blue},
 		go3270.Field{Row: 23, Col: 30, Content: "F3", Color: go3270.Turquoise},

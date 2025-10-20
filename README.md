@@ -31,7 +31,7 @@ This is a proxy server for use with **3270 (TN3270)** emulators, that displays a
 ---
 ## Requirements
 
-- Network access from client to rss3270cli on port 7300, which is the default, or to the port defined by using the command line parameter -port xxxx
+- Network access from client to rss3270cli on port 7300, which is the default, or to a port defined by using the command line parameter -port xxxx
 - The file [rssfeed.url](https://github.com/MortenHarding/rss3270cli/blob/main/rssfeed.url)
 - A TN3270 emulator on client side
 
