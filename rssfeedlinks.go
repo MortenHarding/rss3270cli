@@ -18,7 +18,7 @@ import (
 	"github.com/racingmars/go3270"
 )
 
-func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
+func rssfeedlinks(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	go3270.Tx, any, error) {
 
 	currentURL := rssFeedURL.(string)
@@ -27,7 +27,7 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	pfkeys := []go3270.AID{go3270.AIDEnter, go3270.AIDPF2, go3270.AIDPF4}
 	exitkeys := []go3270.AID{go3270.AIDPF3}
 
-	headlines, err := fetchHeadlines(currentURL, maxHeadlines)
+	headlines, err := fetchHeadlineLinks(currentURL, maxHeadlines)
 	if err != nil {
 		headlines = []string{fmt.Sprintf("Error fetching feed: %v", err)}
 	}
@@ -72,7 +72,7 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 		go3270.Field{Row: 23, Col: 0, Content: "Enter", Color: go3270.Turquoise, Intense: true},
 		go3270.Field{Row: 23, Col: 6, Content: "Refresh", Color: go3270.Blue, Intense: true},
 		go3270.Field{Row: 23, Col: 22, Content: "F2", Color: go3270.Turquoise, Intense: true},
-		go3270.Field{Row: 23, Col: 25, Content: "Headline links", Color: go3270.Blue, Intense: true},
+		go3270.Field{Row: 23, Col: 25, Content: "Headlines", Color: go3270.Blue, Intense: true},
 		go3270.Field{Row: 23, Col: 45, Content: "F3", Color: go3270.Turquoise, Intense: true},
 		go3270.Field{Row: 23, Col: 48, Content: "Exit", Color: go3270.Blue, Intense: true},
 		go3270.Field{Row: 23, Col: 59, Content: "F4", Color: go3270.Turquoise},
@@ -97,10 +97,10 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	switch resp.AID {
 	case go3270.AIDEnter:
 		// Re-run current transaction, echoing back input
-		return rssfeed, currentURL, err
+		return rssfeedlinks, currentURL, err
 	case go3270.AIDPF2:
 		// Go to default screen size transaction
-		return rssfeedlinks, currentURL, nil
+		return rssfeed, currentURL, nil
 	case go3270.AIDPF3:
 		// Exit
 		return nil, nil, nil

@@ -26,7 +26,8 @@ This is a proxy server for use with **3270 (TN3270)** emulators, that displays a
 - First row in `rssfeed.url` is the default RSS feed
 - Handle some special characters, not in EBCDIC. Currently only Nordic characters.
 - Refresh the RSS feed when you press **Enter**
-- Select another RSS feed by pressing **PF4**   
+- Select another RSS feed by pressing **F4**   
+- View headlines or part of headlines with tinyurl to article **F2**
 
 ---
 ## Requirements

@@ -49,7 +49,7 @@ func rsstitles(conn net.Conn, devinfo go3270.DevInfo, data any) (
 	var i int
 	for i = 0; i < len(rssChannels); i++ {
 		for _, line := range max80(fmt.Sprintf("%2d. %s", i, rssChannels[i][0]), 80) {
-			if rssChannels[i][0] == "" { // Exit when Title is blank
+			if rssChannels[i][0] == "" {
 				break
 			}
 			screen = append(screen, go3270.Field{Row: row, Col: 0, Content: line, Color: go3270.Yellow})
@@ -63,11 +63,11 @@ func rsstitles(conn net.Conn, devinfo go3270.DevInfo, data any) (
 	screen = append(screen,
 		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.Blue}, // ASCII only
 		go3270.Field{Row: 23, Col: 0, Content: "Enter", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 6, Content: "Save and return", Color: go3270.Blue},
-		go3270.Field{Row: 23, Col: 28, Content: "F2", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 31, Content: "URLs", Color: go3270.Blue},
-		go3270.Field{Row: 23, Col: 46, Content: "F3", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 49, Content: "Exit", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 6, Content: "Save & return", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 22, Content: "F2", Color: go3270.Turquoise},
+		go3270.Field{Row: 23, Col: 25, Content: "URLs", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 45, Content: "F3", Color: go3270.Turquoise},
+		go3270.Field{Row: 23, Col: 48, Content: "Exit", Color: go3270.Blue},
 		go3270.Field{Row: 23, Col: 60, Content: "Enter ##:", Color: go3270.Blue},
 		go3270.Field{Row: 23, Col: 70, Write: true, Name: "choice", Content: "0", Color: go3270.Turquoise},
 	)

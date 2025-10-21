@@ -22,6 +22,7 @@ import (
 	"time"
 
 	go3270 "github.com/racingmars/go3270"
+	"github.com/subosito/shorturl"
 )
 
 type rss struct {
@@ -51,7 +52,11 @@ func main() {
 
 	for i, url := range rssFeeds {
 		ct := fetchTitle(url)
-		rssChannels[i][0] = ct
+		if ct != "" {
+			rssChannels[i][0] = ct
+		} else {
+			rssChannels[i][0] = "No Title found"
+		}
 		rssChannels[i][1] = url
 		i++
 	}
@@ -116,6 +121,10 @@ func fetchTitle(url string) string {
 		fmt.Println(err)
 	}
 	title := replaceUnhandledChar(r.Channel.Title)
+
+	if title == "" {
+		title = "No Title found"
+	}
 	return title
 }
 
@@ -145,20 +154,71 @@ func fetchHeadlines(url string, limit int) ([]string, error) {
 	for _, it := range r.Channel.Items {
 		t := strings.TrimSpace(it.Title)
 		rpl := replaceUnhandledChar(t)
+
 		if rpl != "" {
 			out = append(out, rpl)
 			if len(out) >= limit {
 				break
 			}
 		}
+	}
+	if len(out) == 0 {
+		out = []string{"(No headlines found)"}
+	}
+	return out, nil
+}
+
+func fetchHeadlineLinks(url string, limit int) ([]string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), httpTimeout)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		body, _ := io.ReadAll(io.LimitReader(resp.Body, 1024))
+		return nil, fmt.Errorf("HTTP %d: %s", resp.StatusCode, strings.TrimSpace(string(body)))
+	}
+
+	var r rss
+	if err := xml.NewDecoder(resp.Body).Decode(&r); err != nil {
+		return nil, err
+	}
+	out := make([]string, 0, limit)
+	for _, it := range r.Channel.Items {
+		t := strings.TrimSpace(it.Title)
+		rpl := replaceUnhandledChar(t)
+		strleng := 45
+		var str string
+
 		//add the url link for the item to the output
-		//l := strings.TrimSpace(it.Link)
-		//if l != "" {
-		//	out = append(out, l)
-		//	if len(out) >= limit {
-		//		break
-		//	}
-		//}
+		l := strings.TrimSpace(it.Link)
+		if l != "" {
+			provider := "tinyurl"
+			u, err := shorturl.Shorten(it.Link, provider)
+			if err == nil {
+				if len([]rune(t)) > strleng {
+					str = rpl[0:strleng] + " " + string(u)
+				} else {
+					str = padRight(rpl, strleng) + " " + string(u)
+				}
+			}
+		} else {
+			str = rpl
+		}
+
+		if str != "" {
+			out = append(out, str)
+			if len(out) >= limit {
+				break
+			}
+		}
 	}
 	if len(out) == 0 {
 		out = []string{"(No headlines found)"}
@@ -225,6 +285,8 @@ func replaceUnhandledChar(s string) string {
 		"–", "-",
 		"’", "'",
 		"‘", "'",
+		"»", "'",
+		"«", "'",
 		"ö", "oe",
 		"ä", "ae",
 		"ü", "ue",
