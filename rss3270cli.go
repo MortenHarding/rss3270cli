@@ -287,6 +287,8 @@ func replaceUnhandledChar(s string) string {
 		"‘", "'",
 		"»", "'",
 		"«", "'",
+		"€", "",
+		"Á", "A",
 		"ö", "oe",
 		"ä", "ae",
 		"ü", "ue",
