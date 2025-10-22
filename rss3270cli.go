@@ -85,6 +85,10 @@ func main() {
 func handle(conn net.Conn) {
 	defer conn.Close()
 
+	//Log the client IP connection
+	connectTime := time.Now().UTC().Format("15:04 UTC")
+	clientAddress := conn.RemoteAddr().String()
+	fmt.Println(connectTime + " - connection from " + clientAddress)
 	// Always begin new connection by negotiating the telnet options
 	devinfo, err := go3270.NegotiateTelnet(conn)
 	if err != nil {
@@ -96,6 +100,7 @@ func handle(conn net.Conn) {
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println(connectTime + " - disconnect from " + clientAddress)
 }
 
 func fetchTitle(url string) string {
