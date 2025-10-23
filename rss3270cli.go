@@ -296,6 +296,7 @@ func replaceUnhandledChar(s string) string {
 		"«", "'",
 		"€", "",
 		"—", "-",
+		"\u00ad", "", //Soft hyphen
 		"Ö", "Oe",
 		"ö", "oe",
 		"Ä", "Ae",
