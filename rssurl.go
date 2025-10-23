@@ -40,7 +40,8 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 		go3270.Field{Row: 2, Col: 0, Content: "Enter URL:"},
 		go3270.Field{Row: 2, Col: 11, Name: "newURL", Write: true, Highlighting: go3270.Underscore},
 		go3270.Field{Row: 2, Col: 79, Autoskip: true}, // field "stop" character
-		go3270.Field{Row: 3, Col: 0, Content: "Or select from one of the below channels"},
+		go3270.Field{Row: 3, Col: 0, Content: "Or select from one of the below channels:"},
+		go3270.Field{Row: 3, Col: 42, Write: true, Name: "choice", Content: "0", Color: go3270.Turquoise},
 	)
 
 	// Build list of RSS Url's
@@ -63,13 +64,11 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 	screen = append(screen,
 		go3270.Field{Row: 22, Col: 0, Content: strings.Repeat("-", 80), Color: go3270.Blue}, // ASCII only
 		go3270.Field{Row: 23, Col: 0, Content: "Enter", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 6, Content: "Save and return", Color: go3270.Blue},
-		go3270.Field{Row: 23, Col: 28, Content: "F2", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 31, Content: "Channels", Color: go3270.Blue},
-		go3270.Field{Row: 23, Col: 46, Content: "F3", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 49, Content: "Exit", Color: go3270.Blue},
-		go3270.Field{Row: 23, Col: 60, Content: "Enter ##:", Color: go3270.Blue},
-		go3270.Field{Row: 23, Col: 70, Write: true, Name: "choice", Content: "0", Color: go3270.Turquoise},
+		go3270.Field{Row: 23, Col: 6, Content: "Save & return", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 22, Content: "F2", Color: go3270.Turquoise},
+		go3270.Field{Row: 23, Col: 25, Content: "URLs", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 45, Content: "F3", Color: go3270.Turquoise},
+		go3270.Field{Row: 23, Col: 48, Content: "Exit", Color: go3270.Blue},
 	)
 
 	fieldValues := make(map[string]string)
@@ -83,7 +82,7 @@ func rssurl(conn net.Conn, devinfo go3270.DevInfo, data any) (
 		pfkeys,      // keys we accept -- validating
 		exitkeys,    // keys we accept -- non-validating
 		"errormsg",  // name of field to put error messages in
-		23, 71,      // cursor coordinates
+		3, 43,       // cursor coordinates
 		conn, // network connection
 	)
 	if err != nil {
