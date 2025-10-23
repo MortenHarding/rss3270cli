@@ -102,7 +102,7 @@ func rsstitles(conn net.Conn, devinfo go3270.DevInfo, data any) (
 			newURL = rssFeeds[0]
 		}
 	}
-	if fieldValues["newURL"] != "" {
+	if strings.HasPrefix(strings.ToLower(fieldValues["newURL"]), "http") {
 		newURL = fieldValues["newURL"]
 	}
 
