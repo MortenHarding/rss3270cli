@@ -281,6 +281,9 @@ func padCenter(s string, w int) string {
 
 func replaceUnhandledChar(s string) string {
 	//Define characters that must be replaced
+	//go3270 will do the conversion to EBCDIC
+	//so this is a conversion from
+	// utf8 -> ascii
 	r := strings.NewReplacer(
 		"å", "aa",
 		"ø", "oe",
@@ -297,6 +300,7 @@ func replaceUnhandledChar(s string) string {
 		"€", "",
 		"—", "-",
 		"\u00ad", "", //Soft hyphen
+		"é", "e",
 		"Ö", "Oe",
 		"ö", "oe",
 		"Ä", "Ae",
