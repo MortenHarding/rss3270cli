@@ -24,8 +24,8 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	currentURL := rssFeedURL.(string)
 
 	// Accept Enter; PF3 exit and PF4 new url.
-	pfkeys := []go3270.AID{go3270.AIDEnter, go3270.AIDPF2, go3270.AIDPF4}
-	exitkeys := []go3270.AID{go3270.AIDPF3}
+	pfkeys := []go3270.AID{go3270.AIDEnter, go3270.AIDPF2, go3270.AIDPF3, go3270.AIDPF4}
+	exitkeys := []go3270.AID{go3270.AIDPF9}
 
 	headlines, err := fetchHeadlines(currentURL, maxHeadlines)
 	if err != nil {
@@ -73,10 +73,10 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 		go3270.Field{Row: 23, Col: 6, Content: "Refresh", Color: go3270.Blue, Intense: true},
 		go3270.Field{Row: 23, Col: 22, Content: "F2", Color: go3270.Turquoise, Intense: true},
 		go3270.Field{Row: 23, Col: 25, Content: "Headline links", Color: go3270.Blue, Intense: true},
-		go3270.Field{Row: 23, Col: 45, Content: "F3", Color: go3270.Turquoise, Intense: true},
-		go3270.Field{Row: 23, Col: 48, Content: "Exit", Color: go3270.Blue, Intense: true},
-		go3270.Field{Row: 23, Col: 59, Content: "F4", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 62, Content: "Change channel", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 45, Content: "F4", Color: go3270.Turquoise, Intense: true},
+		go3270.Field{Row: 23, Col: 48, Content: "Change channel", Color: go3270.Blue, Intense: true},
+		go3270.Field{Row: 23, Col: 69, Content: "F9", Color: go3270.Turquoise},
+		go3270.Field{Row: 23, Col: 72, Content: "Exit", Color: go3270.Blue},
 	)
 
 	resp, err := go3270.HandleScreenAlt(
@@ -101,14 +101,14 @@ func rssfeed(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	case go3270.AIDPF2:
 		// Go to default screen size transaction
 		return rssfeedlinks, currentURL, nil
-	case go3270.AIDPF3:
-		// Exit
-		return nil, nil, nil
 	case go3270.AIDPF4:
 		// Go to default screen size transaction
-		return rsstitles, nil, nil
+		return rsstitles, currentURL, nil
+	case go3270.AIDPF9:
+		// Exit
+		return nil, nil, nil
 	default:
 		// re-run current transaction
-		return rssfeed, nil, nil
+		return rssfeed, currentURL, err
 	}
 }

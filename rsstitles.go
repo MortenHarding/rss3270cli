@@ -17,14 +17,14 @@ import (
 	"github.com/racingmars/go3270"
 )
 
-//var newURLtitles = rssFeeds[0]
-
-func rsstitles(conn net.Conn, devinfo go3270.DevInfo, data any) (
+func rsstitles(conn net.Conn, devinfo go3270.DevInfo, rssFeedURL any) (
 	go3270.Tx, any, error) {
 
+	currentURL := rssFeedURL.(string)
+
 	// Accept Enter; PF3 exit.
-	pfkeys := []go3270.AID{go3270.AIDEnter, go3270.AIDPF2}
-	exitkeys := []go3270.AID{go3270.AIDPF3}
+	pfkeys := []go3270.AID{go3270.AIDEnter, go3270.AIDPF2, go3270.AIDPF3}
+	exitkeys := []go3270.AID{go3270.AIDPF9}
 
 	// Make a local copy of the screen definition that we can append lines to.
 	screen := make(go3270.Screen, len(layout))
@@ -68,7 +68,9 @@ func rsstitles(conn net.Conn, devinfo go3270.DevInfo, data any) (
 		go3270.Field{Row: 23, Col: 22, Content: "F2", Color: go3270.Turquoise},
 		go3270.Field{Row: 23, Col: 25, Content: "URLs", Color: go3270.Blue},
 		go3270.Field{Row: 23, Col: 45, Content: "F3", Color: go3270.Turquoise},
-		go3270.Field{Row: 23, Col: 48, Content: "Exit", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 48, Content: "Return", Color: go3270.Blue},
+		go3270.Field{Row: 23, Col: 69, Content: "F9", Color: go3270.Turquoise},
+		go3270.Field{Row: 23, Col: 72, Content: "Exit", Color: go3270.Blue},
 	)
 
 	fieldValues := make(map[string]string)
@@ -88,35 +90,38 @@ func rsstitles(conn net.Conn, devinfo go3270.DevInfo, data any) (
 	if err != nil {
 		return nil, nil, err
 	}
-	fieldValues = resp.Values
-	if fieldValues["choice"] != "" {
-		ch := fieldValues["choice"]
-		var i int
-		if _, err := fmt.Sscanf(ch, "%2d", &i); err == nil {
-			//Do something with the error
-		}
-		if i < len(rssFeeds) {
-			newURL = rssFeeds[i]
-		} else {
-			newURL = rssFeeds[0]
-		}
-	}
-	if strings.HasPrefix(strings.ToLower(fieldValues["newURL"]), "http") {
-		newURL = fieldValues["newURL"]
-	}
 
 	switch resp.AID {
 	case go3270.AIDEnter:
+		fieldValues = resp.Values
+		if fieldValues["choice"] != "" {
+			ch := fieldValues["choice"]
+			var i int
+			if _, err := fmt.Sscanf(ch, "%2d", &i); err == nil {
+				//Do something with the error
+			}
+			if i < len(rssFeeds) {
+				currentURL = rssFeeds[i]
+			} else {
+				currentURL = rssFeeds[0]
+			}
+		}
+		if strings.HasPrefix(strings.ToLower(fieldValues["newURL"]), "http") {
+			currentURL = fieldValues["newURL"]
+		}
 		// Save and go back
-		return rssfeed, newURL, nil
+		return rssfeed, currentURL, nil
 	case go3270.AIDPF2:
 		// switch to Title screen
-		return rssurl, nil, nil
+		return rssurl, currentURL, nil
 	case go3270.AIDPF3:
+		// Exit
+		return rssfeed, currentURL, nil
+	case go3270.AIDPF9:
 		// Exit
 		return nil, nil, nil
 	default:
 		// re-run current transaction
-		return rssurl, nil, nil
+		return rssfeed, currentURL, nil
 	}
 }
